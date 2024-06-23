@@ -22,7 +22,10 @@ public class Topico {
     private String titulo;
     private String mensaje;
     private Date fechaCreacion;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private EstadoTopico estado;
+
     private String autor;
     private String curso;
 
