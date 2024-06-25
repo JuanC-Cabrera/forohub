@@ -19,7 +19,9 @@ public class Topico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true) // Esta línea añadida para la restricción única
     private String titulo;
+    @Column(unique = true, length = 280) // Definir una longitud máxima para el campo mensaje
     private String mensaje;
     private Date fechaCreacion;
 
