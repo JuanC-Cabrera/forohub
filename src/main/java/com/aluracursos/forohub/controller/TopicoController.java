@@ -1,9 +1,6 @@
 package com.aluracursos.forohub.controller;
 
-import com.aluracursos.forohub.domain.topico.DatosRegistroTopico;
-import com.aluracursos.forohub.domain.topico.DatosRespuestaTopicos;
-import com.aluracursos.forohub.domain.topico.Topico;
-import com.aluracursos.forohub.domain.topico.TopicoRepository;
+import com.aluracursos.forohub.domain.topico.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -51,6 +49,24 @@ public class TopicoController {
         if (optionalTopico.isPresent()) {
             Topico topico = optionalTopico.get();
             DatosRespuestaTopicos datosRespuestaTopicos = new DatosRespuestaTopicos(topico);
+            return ResponseEntity.ok(datosRespuestaTopicos);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<DatosRespuestaTopicos> actualizarTopico(
+            @PathVariable Long id,
+            @RequestBody @Valid DatosActualizarTopico datosActualizarTopico) {
+        Optional<Topico> optionalTopico = topicoRepository.findById(id);
+        if (optionalTopico.isPresent()) {
+            Topico topico = optionalTopico.get();
+            topico.actualizarDatos(datosActualizarTopico);
+            Topico topicoActualizado = topicoRepository.save(topico);
+            DatosRespuestaTopicos datosRespuestaTopicos = new DatosRespuestaTopicos(topicoActualizado);
+
             return ResponseEntity.ok(datosRespuestaTopicos);
         } else {
             return ResponseEntity.notFound().build();
