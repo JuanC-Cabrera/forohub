@@ -24,9 +24,17 @@ public class Topico {
     private Date fechaCreacion;
 
     @Enumerated(EnumType.STRING)
-    private EstadoTopico estado;
+    private EstadoTopico status;
 
     private String autor;
     private String curso;
 
+    public Topico(DatosRegistroTopico datosRegistroTopico) {
+        this.titulo = datosRegistroTopico.titulo();
+        this.mensaje = datosRegistroTopico.mensaje();
+        this.fechaCreacion = new Date();
+        this.status = EstadoTopico.ABIERTO;
+        this.autor = datosRegistroTopico.autor();
+        this.curso = datosRegistroTopico.curso();
+    }
 }
