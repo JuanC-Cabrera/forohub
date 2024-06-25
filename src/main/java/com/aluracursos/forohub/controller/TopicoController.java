@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/topicos")
@@ -42,6 +43,18 @@ public class TopicoController {
     public ResponseEntity<Page<DatosRespuestaTopicos>> listarTopicosOrdenadosPorFecha(
             @PageableDefault(size = 10, sort = "fechaCreacion", direction = Sort.Direction.ASC) Pageable paginacion) {
         return ResponseEntity.ok(topicoRepository.findAll(paginacion).map(DatosRespuestaTopicos::new));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> obtenerTopicoPorId(@PathVariable Long id) {
+        Optional<Topico> optionalTopico = topicoRepository.findById(id);
+        if (optionalTopico.isPresent()) {
+            Topico topico = optionalTopico.get();
+            DatosRespuestaTopicos datosRespuestaTopicos = new DatosRespuestaTopicos(topico);
+            return ResponseEntity.ok(datosRespuestaTopicos);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }
