@@ -39,4 +39,23 @@ public class Topico {
         this.autor = datosRegistroTopico.autor();
         this.curso = datosRegistroTopico.curso();
     }
+
+    public void actualizarDatos(DatosActualizarTopico datosActualizarTopico) {
+        if (datosActualizarTopico.titulo() != null) {
+            this.titulo = datosActualizarTopico.titulo();
+        }
+        if (datosActualizarTopico.mensaje() != null) {
+            this.mensaje = datosActualizarTopico.mensaje();
+        }
+        if (datosActualizarTopico.status() != null) {
+            this.status = datosActualizarTopico.status();
+        }
+        if (datosActualizarTopico.autor() != null) {
+            this.autor = datosActualizarTopico.autor();
+        }
+        if (datosActualizarTopico.curso() != null) {
+            this.curso = datosActualizarTopico.curso();
+        }
+        this.fechaCreacion = new Date(); // Actualizar la fecha de creación a la actual
+    }
 }
