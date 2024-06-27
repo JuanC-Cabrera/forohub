@@ -1,6 +1,7 @@
 package com.aluracursos.forohub.controller;
 
 import com.aluracursos.forohub.domain.topico.*;
+import com.aluracursos.forohub.infra.errores.ValidacionDeIntegridad;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,10 +22,23 @@ public class TopicoController {
 
     @Autowired
     public TopicoRepository topicoRepository;
+    public TopicoService topicoService;
+
+    @Autowired
+    public TopicoController(TopicoService topicoService, TopicoRepository topicoRepository) {
+        this.topicoService = topicoService;
+        this.topicoRepository = topicoRepository;
+    }
 
     @PostMapping()
-    public ResponseEntity<DatosRespuestaTopicos> registrarTopico(@RequestBody @Valid DatosRegistroTopico datosRegistroTopico,
-                                                                 UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<DatosRespuestaTopicos> crearTopico(@RequestBody(required = false) @Valid DatosRegistroTopico datosRegistroTopico,
+                                                             UriComponentsBuilder uriComponentsBuilder) {
+        if (datosRegistroTopico == null) {
+            throw new ValidacionDeIntegridad("No se envió ningún dato en la solicitud.");
+        }
+
+        topicoService.validarTopicoExistente(datosRegistroTopico);
+
         Topico topico = topicoRepository.save(new Topico(datosRegistroTopico));
         DatosRespuestaTopicos datosRespuestaTopicos = new DatosRespuestaTopicos(topico);
         URI url = uriComponentsBuilder.path("topicos/{id}").buildAndExpand(topico.getId()).toUri();
@@ -33,13 +47,13 @@ public class TopicoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<DatosRespuestaTopicos>> listadoTopicos(@PageableDefault(size=10) Pageable paginacion){
+    public ResponseEntity<Page<DatosRespuestaTopicos>> listadoTopicos(@PageableDefault() Pageable paginacion){
         return ResponseEntity.ok(topicoRepository.findAll(paginacion).map(DatosRespuestaTopicos::new));
     }
 
     @GetMapping("/ordenados")
     public ResponseEntity<Page<DatosRespuestaTopicos>> listarTopicosOrdenadosPorFecha(
-            @PageableDefault(size = 10, sort = "fechaCreacion", direction = Sort.Direction.ASC) Pageable paginacion) {
+            @PageableDefault(sort = "fechaCreacion", direction = Sort.Direction.ASC) Pageable paginacion) {
         return ResponseEntity.ok(topicoRepository.findAll(paginacion).map(DatosRespuestaTopicos::new));
     }
 
