@@ -1,7 +1,6 @@
 package com.aluracursos.forohub.infra.errores;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -31,16 +30,6 @@ public class TratadorDeErrores {
     @ExceptionHandler(ValidacionDeIntegridad.class)
     public ResponseEntity<?> errorHandlerValidacionesIntegridad(ValidacionDeIntegridad e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-    }
-
-    @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<?> errorHandlerValidacionesDeNegocio(ValidationException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleGeneralExceptions(Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor.");
     }
 
     private record DatosErrorValidacion(String campo, String error) {
