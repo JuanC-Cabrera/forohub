@@ -1,5 +1,6 @@
 package com.aluracursos.forohub.domain.usuario;
 
+import com.aluracursos.forohub.domain.topico.Topico;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -35,6 +36,9 @@ public class Usuario implements UserDetails {
     @Email
     @Column(unique = true)
     private String email;
+
+    @OneToMany(mappedBy = "autor")
+    private List<Topico> topicos;
 
     @NotBlank
     private String password;

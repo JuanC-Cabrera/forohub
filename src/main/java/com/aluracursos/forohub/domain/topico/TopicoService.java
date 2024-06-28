@@ -16,8 +16,8 @@ public class TopicoService {
     }
 
     public void validarTopicoExistente(@Valid DatosRegistroTopico nuevoTopico) {
-        boolean tituloExistente = topicoRepository.existsByTitulo(nuevoTopico.getTitulo());
-        boolean mensajeExistente =topicoRepository.existsByMensaje(nuevoTopico.getMensaje());
+        boolean tituloExistente = topicoRepository.existsByTitulo(nuevoTopico.titulo());
+        boolean mensajeExistente = topicoRepository.existsByMensaje(nuevoTopico.mensaje());
 
         if (tituloExistente && mensajeExistente) {
             throw new ValidacionDeIntegridad("Ya existe un topico con ese titulo y mensaje.");
@@ -27,5 +27,4 @@ public class TopicoService {
             throw new ValidacionDeIntegridad("Ya existe un topico con ese mensaje.");
         }
     }
-
 }

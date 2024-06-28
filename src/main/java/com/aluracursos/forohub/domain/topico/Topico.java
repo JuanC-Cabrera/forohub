@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import com.aluracursos.forohub.domain.usuario.Usuario;
 
 import java.util.Date;
 
@@ -19,24 +20,30 @@ public class Topico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true) // Esta línea añadida para la restricción única
+
+    @Column(unique = true)
     private String titulo;
-    @Column(unique = true, length = 280) // Definir una longitud máxima para el campo mensaje
+
+    @Column(unique = true, length = 280)
     private String mensaje;
+
     private Date fechaCreacion;
 
     @Enumerated(EnumType.STRING)
     private EstadoTopico status;
 
-    private String autor;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "usuario_id")
+    private Usuario autor;
+
     private String curso;
 
-    public Topico(DatosRegistroTopico datosRegistroTopico) {
+    public Topico(DatosRegistroTopico datosRegistroTopico, Usuario autor) {
         this.titulo = datosRegistroTopico.titulo();
         this.mensaje = datosRegistroTopico.mensaje();
         this.fechaCreacion = new Date();
         this.status = EstadoTopico.ABIERTO;
-        this.autor = datosRegistroTopico.autor();
+        this.autor = autor;
         this.curso = datosRegistroTopico.curso();
     }
 
@@ -50,12 +57,14 @@ public class Topico {
         if (datosActualizarTopico.status() != null) {
             this.status = datosActualizarTopico.status();
         }
-        if (datosActualizarTopico.autor() != null) {
-            this.autor = datosActualizarTopico.autor();
-        }
         if (datosActualizarTopico.curso() != null) {
             this.curso = datosActualizarTopico.curso();
         }
         this.fechaCreacion = new Date(); // Actualizar la fecha de creación a la actual
     }
+
+    public Usuario getUsuario() {
+        return autor;
+    }
 }
+
